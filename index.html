@@ -1,754 +1,1187 @@
 <!DOCTYPE html>
-<html lang="en">    
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ahamed Mihad S — EV, Renewable Energy &amp; Battery Systems</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
-
-  :root{
-    --bg: #0a1512;
-    --bg-panel: #0f1f1a;
-    --bg-panel-2: #12241e;
-    --line: #1e352d;
-    --copper: #c98a3e;
-    --copper-bright: #e3ab5e;
-    --cyan: #4fd8c4;
-    --text: #e8ede9;
-    --text-muted: #8ea69c;
-    --text-dim: #5c716a;
-    --radius: 3px;
-  }
-
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ scroll-behavior:smooth; }
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter', sans-serif;
-    overflow-x:hidden;
-    cursor:none;
-    position:relative;
-  }
-  ::selection{ background:var(--copper); color:#0a1512; } 
-
-  @media (prefers-reduced-motion: reduce){
-    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
-  }
-
-  a{ color:inherit; text-decoration:none; }
-  body{ overflow-y:hidden; }
-  body.loaded{ overflow-y:auto; }
-  h1,h2,h3,h4{ font-family:'Chakra Petch', sans-serif; letter-spacing:0.01em; }
-  .mono{ font-family:'JetBrains Mono', monospace; }
-  /* ================= custom cursor ================= */
-  #cursor-dot, #cursor-ring{
-    position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
-    border-radius:50%;
-    transform:translate(-50%,-50%);
-  }
-  #cursor-dot{ width:6px; height:6px; background:var(--copper-bright); box-shadow:0 0 8px var(--copper-bright); }
-  #cursor-ring{
-    width:32px; height:32px; border:1px solid var(--cyan);
-    opacity:0.6; transition:width .25s ease, height .25s ease, border-color .25s ease, opacity .25s ease;
-  }
-  #cursor-ring.hover{ width:54px; height:54px; border-color:var(--copper-bright); opacity:0.9; }
-  #cursor-ring::before, #cursor-ring::after{
-    content:''; position:absolute; background:var(--cyan);
-  }
-  #cursor-ring::before{ width:6px; height:1px; top:50%; left:-9px; }
-  #cursor-ring::after{ width:1px; height:6px; left:50%; top:-9px; }
-  @media (hover:none){ #cursor-dot,#cursor-ring{ display:none; } body{ cursor:auto; } }
-
-  /* ================= background circuit canvas ================= */
-  #circuit-bg{
-    position:fixed; inset:0; z-index:0; opacity:0.5;
-  }
-  .grain{
-    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.035;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* vertical trace that runs the length of the page, pulses on scroll */
-  #spine-wrap{
-    position:absolute; left:50%; top:0; width:2px; height:100%;
-    transform:translateX(-50%); z-index:2; pointer-events:none;
-  }
-  #spine{ width:100%; height:100%; background:linear-gradient(var(--line), var(--line)); position:relative; }
-  #spine-pulse{
-    position:absolute; left:50%; top:0; width:8px; height:120px;
-    transform:translateX(-50%);
-    background:linear-gradient(180deg, transparent, var(--cyan), transparent);
-    box-shadow:0 0 20px 4px var(--cyan);
-    opacity:0.85;
-  }
-
-  main{ position:relative; z-index:3; }
-
-  /* ================= loader ================= */
-  #loader{
-    position:fixed; inset:0; z-index:10000;
-    background:var(--bg);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    transition:opacity .6s ease, visibility .6s ease;
-  }
-  #loader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-  #loader-eyebrow{
-    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.3em;
-    color:var(--cyan); text-transform:uppercase; margin-bottom:18px; opacity:.8;
-  }
-  #loader-text{
-    font-family:'JetBrains Mono',monospace; font-size:clamp(1.2rem,4vw,1.7rem);
-    letter-spacing:0.18em; color:var(--text); min-height:1.4em;
-  }
-  #loader-text::after{
-    content:''; display:inline-block; width:2px; height:1em; margin-left:4px;
-    background:var(--copper-bright); vertical-align:-2px;
-    animation:blink 0.9s step-end infinite;
-  }
-  @keyframes blink{ 50%{ opacity:0; } }
-  #loader-bar{ width:220px; height:2px; background:var(--line); margin-top:28px; position:relative; overflow:hidden; border-radius:2px; }
-  #loader-bar span{
-    position:absolute; left:0; top:0; height:100%; width:0%;
-    background:linear-gradient(90deg, var(--copper), var(--cyan));
-    transition:width 1.4s cubic-bezier(.4,0,.2,1);
-  }
-
-  /* ================= header ================= */
-  header{
-    position:fixed; top:0; left:0; right:0; z-index:100;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 5vw;
-    background:rgba(10,21,18,0.75);
-    backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);
-  }
-  .header-left{ display:flex; align-items:center; gap:24px; }
-  .logo{ display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:15px; letter-spacing:0.05em; }
-  .logo-node{
-    width:12px; height:12px; border-radius:50%;
-    border:1.5px solid var(--copper-bright);
-    position:relative;
-  }
-  .logo-node::after{
-    content:''; position:absolute; inset:3px; border-radius:50%; background:var(--copper-bright);
-    animation:pulse-node 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse-node{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:0.3; transform:scale(0.6);} }
-  .logo b{ color:var(--copper-bright); font-weight:600; }
-
-  .head-icons{ display:flex; align-items:center; gap:12px; padding-left:22px; border-left:1px solid var(--line); }
-  .head-icons a{
-    width:30px; height:30px; border:1px solid var(--line); border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    color:var(--text-muted); transition:border-color .3s ease, color .3s ease, transform .3s ease;
-  }
-  .head-icons a svg{ width:14px; height:14px; }
-  .head-icons a:hover{ border-color:var(--copper-bright); color:var(--copper-bright); transform:translateY(-2px); }
-  @media (max-width:640px){ .head-icons{ padding-left:12px; gap:8px; } .head-icons a{ width:26px; height:26px; } }
-
-  nav ul{ list-style:none; display:flex; gap:34px; }
-  nav a{
-    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.08em;
-    text-transform:uppercase; color:var(--text-muted); position:relative; padding:6px 2px 8px;
-    transition:color .3s ease;
-  }
-  nav a::before{ content:'0' attr(data-n) ' / '; color:var(--copper); margin-right:2px; transition:color .3s ease; }
-  nav a::after{
-    content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--cyan);
-    transition:width .3s ease;
-  }
-  nav a:hover{ color:var(--text); }
-  nav a:hover::after{ width:100%; }
-  nav a.active{ color:var(--copper-bright); }
-  nav a.active::before{ color:var(--cyan); }
-  nav a.active::after{ width:100%; background:var(--copper-bright); box-shadow:0 0 8px var(--copper-bright); }
-
-  /* ---- mobile nav ---- */
-  #nav-toggle{
-    display:none; width:38px; height:38px; border:1px solid var(--line); border-radius:50%;
-    align-items:center; justify-content:center; background:transparent; flex:none;
-    flex-direction:column; gap:5px; cursor:pointer; position:relative; z-index:101;
-  }
-  #nav-toggle span{
-    display:block; width:15px; height:1.5px; background:var(--text);
-    transition:transform .3s ease, opacity .3s ease;
-  }
-  #nav-toggle.open span:nth-child(1){ transform:translateY(6.5px) rotate(45deg); }
-  #nav-toggle.open span:nth-child(2){ opacity:0; }
-  #nav-toggle.open span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); }
-  @media (max-width:900px){
-    nav{
-      display:block; position:fixed; inset:0; top:0; left:0; width:100%; height:100vh;
-      background:rgba(10,21,18,0.98); backdrop-filter:blur(14px);
-      display:flex; align-items:center; justify-content:center;
-      opacity:0; visibility:hidden; transform:translateY(-8px);
-      transition:opacity .35s ease, visibility .35s ease, transform .35s ease;
-      z-index:99;
-    }
-    nav.open{ opacity:1; visibility:visible; transform:translateY(0); }
-    nav ul{ flex-direction:column; align-items:center; gap:30px; }
-    nav a{ font-size:15px; }
-    #nav-toggle{ display:flex; }
-  }
-
-  /* ================= back-to-top toggle ================= */
-  #to-top{
-    position:fixed; right:26px; bottom:26px; z-index:200;
-    width:46px; height:46px; border-radius:50%;
-    background:var(--bg-panel); border:1px solid var(--line);
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; pointer-events:none; transform:translateY(12px);
-    transition:opacity .35s ease, transform .35s ease, border-color .3s ease, background .3s ease;
-  }
-  #to-top.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
-  #to-top:hover{ border-color:var(--copper-bright); background:var(--bg-panel-2); transform:translateY(-3px); }
-  #to-top svg{ width:18px; height:18px; }
-
-  /* ================= hero ================= */
-  .hero{
-    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:0 6vw; position:relative; text-align:center;
-  }
-  .eyebrow{
-    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.25em;
-    color:var(--cyan); text-transform:uppercase; margin-bottom:22px;
-    display:flex; align-items:center; justify-content:center; gap:10px;
-  }
-  .eyebrow::before{ content:''; width:28px; height:1px; background:var(--cyan); }
-
-  .hero h1{
-    font-size:clamp(2.6rem, 7vw, 6.2rem); line-height:0.98; font-weight:700;
-    overflow:hidden;
-  }
-  .hero h1 .line{ display:block; overflow:hidden; }
-  .hero h1 span{ display:inline-block; transform:translateY(110%); }
-  body.loaded .hero h1 span{ animation:rise .9s cubic-bezier(.2,.9,.25,1) forwards; }
-  body.loaded .hero h1 .line:nth-child(1) span{ animation-delay:.1s; }
-  body.loaded .hero h1 .line:nth-child(2) span{ animation-delay:.22s; }
-  .hero h1 .line:nth-child(2) span{ color:var(--copper-bright); }
-  @keyframes rise{ to{ transform:translateY(0); } }
-
-  .hero .tagline{
-    margin:26px auto 0; font-size:clamp(1rem,2vw,1.3rem); color:var(--text-muted); max-width:600px;
-    font-weight:400; opacity:0;
-  }
-  body.loaded .hero .tagline{ animation:fadeUp .8s ease forwards; animation-delay:.6s; }
-  @keyframes fadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
-
-  .hero-links{ margin-top:40px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center; opacity:0; }
-  body.loaded .hero-links{ animation:fadeUp .8s ease forwards; animation-delay:.85s; }
-  .btn{
-    font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:0.06em;
-    padding:13px 24px; border-radius:var(--radius); position:relative; overflow:hidden;
-    border:1px solid var(--line); text-transform:uppercase;
-  }
-  .btn.primary{ background:var(--copper); color:#0a1512; border-color:var(--copper); font-weight:600; }
-  .btn.primary:hover{ background:var(--copper-bright); }
-  .btn.ghost{ color:var(--text); }
-  .btn.ghost:hover{ border-color:var(--cyan); color:var(--cyan); }
-
-  /* ================= section shell ================= */
-  section{ padding:130px 6vw; position:relative; }
-  .section-head{ display:flex; align-items:baseline; gap:18px; margin-bottom:56px; }
-  .section-head .tag{
-    font-family:'JetBrains Mono',monospace; color:var(--copper); font-size:12px; letter-spacing:0.15em;
-    border:1px solid var(--line); padding:5px 10px; border-radius:var(--radius);
-  }
-  .section-head h2{ font-size:clamp(1.7rem,3.4vw,2.6rem); }
-
-  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
-  .reveal.in{ opacity:1; transform:translateY(0); }
-
-  /* ================= about ================= */
-  .about-grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:60px; align-items:start; }
-  @media (max-width:860px){ .about-grid{ grid-template-columns:1fr; } }
-  .about-grid p{ color:var(--text-muted); font-size:1.05rem; line-height:1.85; margin-bottom:18px; }
-  .about-grid strong{ color:var(--text); font-weight:600; }
-
-  .stat-card{
-    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:22px 24px; margin-bottom:14px; position:relative; overflow:hidden;
-  }
-  .stat-card::before{
-    content:''; position:absolute; top:0; left:0; width:2px; height:100%; background:var(--copper);
-  }
-  .stat-card .n{ font-family:'JetBrains Mono',monospace; font-size:1.9rem; color:var(--copper-bright); }
-  .stat-card .l{ font-size:12.5px; color:var(--text-muted); letter-spacing:0.03em; margin-top:4px; }
-
-  /* ================= skills ================= */
-  .skills-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:16px; }
-  .skill-mod{
-    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:22px; transition:border-color .3s ease, transform .3s ease, background .3s ease;
-    position:relative;
-  }
-  .skill-mod:hover{ border-color:var(--copper); transform:translateY(-4px); background:var(--bg-panel-2); }
-  .skill-mod .idx{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); }
-  .skill-mod h4{ font-size:1.02rem; margin:10px 0 8px; }
-  .skill-mod p{ font-size:12.5px; color:var(--text-muted); line-height:1.6; }
-  .skill-mod .bar{ margin-top:14px; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
-  .skill-mod .bar span{ display:block; height:100%; background:linear-gradient(90deg, var(--copper), var(--cyan)); width:0%; transition:width 1.1s ease; }
-  .skill-mod.in .bar span{ width:var(--w); }
-
-  /* ================= timeline (experience) ================= */
-  .timeline{ position:relative; padding-left:38px; }
-  .timeline::before{ content:''; position:absolute; left:5px; top:6px; bottom:6px; width:1px; background:var(--line); }
-  .tl-item{ position:relative; padding-bottom:56px; }
-  .tl-item:last-child{ padding-bottom:0; }
-  .tl-item::before{
-    content:''; position:absolute; left:-38px; top:4px; width:11px; height:11px; border-radius:50%;
-    background:var(--bg); border:2px solid var(--copper); z-index:2;
-  }
-  .tl-item.in::before{ animation:node-fire .6s ease forwards; }
-  @keyframes node-fire{ 50%{ box-shadow:0 0 0 6px rgba(201,138,62,0.25);} 100%{ box-shadow:0 0 0 0 rgba(201,138,62,0);} }
-  .tl-date{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan); letter-spacing:0.05em; }
-  .tl-item h3{ font-size:1.35rem; margin:8px 0 4px; }
-  .tl-item .org{ color:var(--copper-bright); font-size:14px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; }
-  .tl-item p{ color:var(--text-muted); line-height:1.75; max-width:640px; }
-  .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
-  .chip{
-    font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; border:1px solid var(--line);
-    border-radius:20px; color:var(--text-muted);
-  }
-
-  /* ================= projects ================= */
-  .proj-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:22px; }
-  .proj-card{
-    background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:28px; position:relative; overflow:hidden; transition:transform .35s ease, border-color .35s ease;
-  }
-  .proj-card::after{
-    content:''; position:absolute; inset:0; opacity:0; background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(79,216,196,0.10), transparent 60%);
-    transition:opacity .3s ease; pointer-events:none;
-  }
-  .proj-card:hover{ transform:translateY(-6px); border-color:var(--cyan); }
-  .proj-card:hover::after{ opacity:1; }
-  .proj-num{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-dim); }
-  .proj-card h3{ font-size:1.25rem; margin:14px 0 10px; }
-  .proj-card p{ color:var(--text-muted); font-size:14px; line-height:1.7; margin-bottom:16px; }
-  .proj-tags{ display:flex; gap:8px; flex-wrap:wrap; }
-  .proj-tags span{ font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--copper-bright); border:1px solid var(--line); padding:4px 8px; border-radius:2px; }
-
-  /* ================= certifications ================= */
-  .cert-list{ display:flex; flex-direction:column; border-top:1px solid var(--line); }
-  .cert-row{
-    display:grid; grid-template-columns:1fr auto auto; gap:20px; align-items:center;
-    padding:22px 6px; border-bottom:1px solid var(--line);
-    transition:padding-left .3s ease, background .3s ease;
-  }
-  .cert-row:hover{ padding-left:16px; background:rgba(79,216,196,0.03); }
-  .cert-row h4{ font-size:1.05rem; }
-  .cert-row .issuer{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-muted); margin-top:4px; }
-  .cert-row .meta{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); white-space:nowrap; }
-  .cert-row .verify{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--cyan); border:1px solid var(--line); padding:7px 12px; border-radius:20px; white-space:nowrap; }
-  .cert-row .verify:hover{ border-color:var(--cyan); }
-  @media (max-width:700px){ .cert-row{ grid-template-columns:1fr; row-gap:10px; } }
-
-  /* ================= contact / footer ================= */
-  footer{
-    padding:120px 6vw 50px; position:relative; border-top:1px solid var(--line);
-    overflow:hidden;
-  }
-  footer .big{
-    font-size:clamp(2.2rem,8vw,6rem); font-weight:700; line-height:1;
-  }
-  footer .big span{ display:inline-block; background:linear-gradient(90deg, var(--text), var(--copper-bright), var(--cyan), var(--text)); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 6s linear infinite; }
-  @keyframes shimmer{ to{ background-position:-300% 0; } }
-
-  .contact-grid{ display:flex; flex-wrap:wrap; gap:16px; margin:44px 0 90px; }
-  .contact-pill{
-    display:flex; align-items:center; gap:10px; padding:14px 20px;
-    border:1px solid var(--line); border-radius:30px; font-family:'JetBrains Mono',monospace; font-size:13px;
-    transition:border-color .3s ease, transform .3s ease;
-  }
-  .contact-pill:hover{ border-color:var(--copper); transform:translateY(-3px); }
-  .contact-pill .ic{ width:16px; height:16px; flex:none; }
-
-  .foot-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-top:30px; border-top:1px solid var(--line); }
-  .foot-bottom p{ font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--text-dim); }
-
-  @media (max-width:480px){
-    header{ padding:14px 5vw; }
-    section{ padding:90px 6vw; }
-    .about-grid{ gap:36px; }
-    footer{ padding:90px 6vw 40px; }
-  }
-
-  ::-webkit-scrollbar{ width:8px; }
-  ::-webkit-scrollbar-track{ background:var(--bg); }
-  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AHAMED MIHAD S | Electrical &amp; Electronics Engineer | EV Systems &amp; Renewable Energy</title>
+  
+  <!-- SEO & Open Graph Meta -->
+  <meta name="description" content="Personal engineering portfolio of Ahamed Mihad S — Electrical &amp; Electronics Engineering Student specializing in EV Systems, Battery Design, Embedded Systems, Renewable Energy &amp; Industrial Automation.">
+  <meta name="keywords" content="Ahamed Mihad S, Electrical Engineer, EV Systems, Battery Pack Design, Embedded Systems, Renewable Energy, PLC Programming, Siemens TIA Portal, MATLAB Simulink">
+  <meta name="author" content="Ahamed Mihad S">
+  <meta name="theme-color" content="#F7F9F7">
+  
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="AHAMED MIHAD S | Electrical &amp; Electronics Engineer">
+  <meta property="og:description" content="Building solutions across EV Systems, Battery Technology &amp; Embedded Engineering.">
+  <meta property="og:image" content="assets/images/profile.jpg">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
 
-<div id="loader">
-  <div id="loader-eyebrow">Initializing Portfolio</div>
-  <div id="loader-text"></div>
-  <div id="loader-bar"><span id="loader-bar-fill"></span></div>
-</div>
+  <!-- Custom Engineering Cursor Motion Elements -->
+  <div class="cursor-dot cursor-hidden" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring cursor-hidden" id="cursorRing" aria-hidden="true"></div>
 
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
-<canvas id="circuit-bg"></canvas>
-<div class="grain"></div>
-<div id="spine-wrap"><div id="spine"><div id="spine-pulse"></div></div></div>
+  <!-- Subtle Technical Grid Overlay -->
+  <div class="bg-grid-overlay" aria-hidden="true"></div>
 
-<header>
-  <div class="header-left">
-    <div class="logo"><span class="logo-node"></span><b>AM</b></div>
-    <div class="head-icons">
-      <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
-      <a href="https://www.linkedin.com/in/ahamedmihad" target="_blank" rel="noopener" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></a>
-      <a href="mailto:ahmdmihadh7@gmail.com" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></a>
-      <a href="tel:+919566318294" title="Call"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></a>
-    </div>
-  </div>
-  <nav>
-    <ul>
-      <li><a href="#about" data-n="1">About</a></li>
-      <li><a href="#skills" data-n="2">Skills</a></li>
-      <li><a href="#experience" data-n="3">Experience</a></li>
-      <li><a href="#projects" data-n="4">Projects</a></li>
-      <li><a href="#certs" data-n="5">Certifications</a></li>
-      <li><a href="#contact" data-n="6">Contact</a></li>
-    </ul>
-  </nav>
-  <button id="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
-</header>
+  <!-- =========================================================================
+       HEADER & NAVIGATION (TOP-LEFT SOCIAL ICONS & RESPONSIVE NAV)
+       ========================================================================= -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-container">
+      
+      <!-- Top Left: LinkedIn, GitHub, Email, Phone Icons + Name Badge -->
+      <div class="nav-social-left">
+        <!-- LinkedIn -->
+        <a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer" class="nav-social-icon" aria-label="LinkedIn Profile" title="LinkedIn: ahamedmihad">
+          <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
 
-<main>
+        <!-- GitHub -->
+        <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer" class="nav-social-icon" aria-label="GitHub Profile" title="GitHub: ahmdmihadh7">
+          <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
 
-  <section class="hero">
-    <div class="eyebrow">EV · Renewable &amp; Wind Energy · Battery Systems · Chennai, India</div>
-    <h1>
-      <span class="line"><span>Ahamed</span></span>
-      <span class="line"><span>Mihad S</span></span>
-    </h1>
-    <p class="tagline">I work on electric vehicle and battery systems, renewable &amp; wind energy fundamentals, and MATLAB/Simulink modelling — turning power-system concepts into simulated, testable, working hardware.</p>
-    <div class="hero-links">
-      <a class="btn primary" href="#contact">Get in touch</a>
-      <a class="btn ghost" href="#projects">View projects</a>
-    </div>
-  </section>
+        <!-- Mail -->
+        <a href="mailto:ahmdmihadh7@gmail.com" class="nav-social-icon" aria-label="Send Email" title="Email: ahmdmihadh7@gmail.com">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </a>
 
-  <section id="about">
-    <div class="section-head"><span class="tag">01 · ABOUT</span><h2>Profile</h2></div>
-    <div class="about-grid">
-      <div class="reveal">
-        <p>I'm an electronics engineering student at <strong>B.S. Abdur Rahman Crescent Institute of Science and Technology, Chennai</strong>, focused on the systems that power the shift to clean energy — <strong>electric vehicles, renewable &amp; wind energy, and battery technology</strong>. I use <strong>MATLAB &amp; Simulink</strong> to model and simulate these systems before they ever touch hardware.</p>
-        <p>That focus is grounded in hands-on work: a battery systems internship covering <strong>battery pack design, CAD modelling, prototyping and circuit design</strong>, plus an embedded systems internship in <strong>microcontroller programming and hardware interfacing</strong>. I've carried that same energy-systems thinking into a certified practice venture (Aegis) and coursework in industrial control and business analytics — so I can design a system, simulate it, build it, and read the data it produces.</p>
+        <!-- Phone -->
+        <a href="tel:+919566318294" class="nav-social-icon" aria-label="Call Phone Number" title="Phone: +91 95663 18294">
+          <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </a>
+
+        <div class="nav-social-divider" aria-hidden="true"></div>
+
+        <a href="#home" class="header-brand-name" aria-label="Ahamed Mihad S">
+          <span class="h-name">AHAMED MIHAD S</span>
+          <span class="h-role">EEE · EV &amp; Embedded</span>
+        </a>
       </div>
-      <div class="reveal">
-        <div class="stat-card"><div class="n mono">02</div><div class="l">Hands-on internships in battery &amp; embedded systems</div></div>
-        <div class="stat-card"><div class="n mono">04</div><div class="l">Core focus areas — EV, Renewable/Wind Energy, MATLAB/Simulink, Batteries</div></div>
-        <div class="stat-card"><div class="n mono">91.11%</div><div class="l">Viability score — Aegis, Ignite India venture (Wadhwani Foundation)</div></div>
-      </div>
-    </div>
-  </section>
 
-  <section id="skills">
-    <div class="section-head"><span class="tag">02 · STACK</span><h2>Skill modules</h2></div>
-    <div class="skills-grid">
-      <div class="skill-mod reveal" style="--w:86%"><div class="idx mono">M01</div><h4>Electric Vehicles</h4><p>EV powertrain fundamentals — battery-motor integration &amp; charging systems.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:82%"><div class="idx mono">M02</div><h4>Renewable Energy</h4><p>Solar &amp; grid-integrated renewable energy system fundamentals.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:80%"><div class="idx mono">M03</div><h4>Wind Energy</h4><p>Wind turbine fundamentals &amp; energy conversion basics.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:85%"><div class="idx mono">M04</div><h4>MATLAB &amp; Simulink</h4><p>System modelling &amp; simulation for power and control systems.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:88%"><div class="idx mono">M05</div><h4>Battery Systems</h4><p>Cell layout, protection circuits &amp; pack assembly design.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:80%"><div class="idx mono">M06</div><h4>Circuit Design &amp; Prototyping</h4><p>Schematic design through to working hardware prototypes.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:78%"><div class="idx mono">M07</div><h4>Embedded Systems</h4><p>Microcontroller programming &amp; hardware interfacing.</p><div class="bar"><span></span></div></div>
-      <div class="skill-mod reveal" style="--w:75%"><div class="idx mono">M08</div><h4>CAD Modelling</h4><p>Mechanical/electrical CAD for enclosures &amp; pack layout.</p><div class="bar"><span></span></div></div>
-    </div>
-  </section>
+      <!-- Desktop Nav Links -->
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#experience" class="nav-link">Experience</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#skills" class="nav-link">Skills</a></li>
+          <li><a href="#certifications" class="nav-link">Certifications</a></li>
+          <li><a href="#education" class="nav-link">Education</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
 
-  <section id="experience">
-    <div class="section-head"><span class="tag">03 · TIMELINE</span><h2>Experience</h2></div>
-    <div class="timeline">
-      <div class="tl-item reveal">
-        <div class="tl-date mono">22 JUN — 08 JUL 2026</div>
-        <h3>Electronics &amp; Battery Systems Intern</h3>
-        <div class="org">SivionX Technologies Private Limited</div>
-        <p>Actively involved in learning and developing battery pack design, CAD modelling, prototyping and circuit design work for the organization's hardware programs.</p>
-        <div class="chips"><span class="chip">Battery Pack Design</span><span class="chip">CAD Modelling</span><span class="chip">Prototyping</span><span class="chip">Circuit Design</span></div>
-      </div>
-      <div class="tl-item reveal">
-        <div class="tl-date mono">21 JUN — 06 JUL 2025</div>
-        <h3>Embedded Systems Intern</h3>
-        <div class="org">Pumo Technovation India Pvt Ltd</div>
-        <p>Worked on core embedded systems concepts, including microcontroller programming and hardware interfacing, completing all assigned tasks in an offline, hands-on lab environment.</p>
-        <div class="chips"><span class="chip">Microcontroller Programming</span><span class="chip">Hardware Interfacing</span><span class="chip">Embedded C</span></div>
-      </div>
-      <div class="tl-item reveal">
-        <div class="tl-date mono">JUN 2026</div>
-        <h3>Marketing Lead — "Aegis" Venture</h3>
-        <div class="org">Ignite India, Wadhwani Foundation, at B.S. Abdur Rahman Crescent Institute</div>
-        <p>Completed a 42-hour entrepreneurship training program, taking on market research and marketing strategy for Aegis — a certified practice venture that scored a 91.11% viability index and was recognized for excellence and real-world impact.</p>
-        <div class="chips"><span class="chip">Market Research</span><span class="chip">Marketing Strategy</span><span class="chip">Venture Building</span></div>
+      <!-- Nav Actions: Mobile Menu Toggle Button -->
+      <div class="nav-actions">
+        <button type="button" class="menu-toggle-btn" id="menuToggleBtn" aria-label="Open mobile navigation menu">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section id="projects">
-    <div class="section-head"><span class="tag">04 · BUILDS</span><h2>Projects</h2></div>
-    <div class="proj-grid">
-      <div class="proj-card reveal" data-tilt>
-        <div class="proj-num mono">P-01</div>
-        <h3>Battery Pack Design &amp; Prototyping</h3>
-        <p>Designed and prototyped a battery pack — from CAD layout of the enclosure and cell arrangement through to circuit design for protection and assembly, at SivionX Technologies.</p>
-        <div class="proj-tags"><span>CAD</span><span>Circuit Design</span><span>Prototyping</span></div>
+  <!-- Mobile Drawer & Backdrop -->
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile Navigation">
+    <div>
+      <div class="drawer-header">
+        <div>
+          <div style="font-family: var(--font-mono); font-weight: 800; font-size: 1rem; color: var(--text-primary);">AHAMED MIHAD S</div>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-green);">Electrical &amp; Electronics Engineer</div>
+        </div>
+        <button type="button" class="drawer-close-btn" id="drawerCloseBtn" aria-label="Close menu">&times;</button>
       </div>
-      <div class="proj-card reveal" data-tilt>
-        <div class="proj-num mono">P-02</div>
-        <h3>Embedded Hardware Interfacing</h3>
-        <p>Built and tested microcontroller-driven hardware interfacing tasks during an offline internship, covering core embedded programming concepts end to end.</p>
-        <div class="proj-tags"><span>Embedded C</span><span>Microcontrollers</span><span>Hardware I/O</span></div>
+      
+      <!-- Drawer Social Icons -->
+      <div class="drawer-social-strip">
+        <a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer" class="nav-social-icon" aria-label="LinkedIn">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer" class="nav-social-icon" aria-label="GitHub">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:ahmdmihadh7@gmail.com" class="nav-social-icon" aria-label="Email">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </a>
+        <a href="tel:+919566318294" class="nav-social-icon" aria-label="Phone">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </a>
       </div>
-      <div class="proj-card reveal" data-tilt>
-        <div class="proj-num mono">P-03</div>
-        <h3>Industrial HMI + PLC Control</h3>
-        <p>Applied coursework project combining Siemens TIA Portal PLC programming with HMI screen design for monitoring and controlling an automated process.</p>
-        <div class="proj-tags"><span>Siemens TIA Portal</span><span>PLC</span><span>HMI</span></div>
-      </div>
-      <div class="proj-card reveal" data-tilt>
-        <div class="proj-num mono">P-04</div>
-        <h3>Aegis — Smart Bathroom Safety Device</h3>
-        <p>Marketing lead for a ceiling-mounted IoT safety device (ESP32, mmWave/PIR sensors, GSM module) that detects falls or inactivity and sends instant buzzer + GSM alerts — camera-free and built for elderly home safety. Scored a 91.11% viability index.</p>
-        <div class="proj-tags"><span>Market Research</span><span>IoT</span><span>GTM Strategy</span></div>
-      </div>
-      <div class="proj-card reveal" data-tilt>
-        <div class="proj-num mono">P-05</div>
-        <h3>BI &amp; Analytics Fundamentals</h3>
-        <p>Completed applied coursework in business intelligence and analytics, covering data-driven decision-making — finished with a 92/100 grade over 46 hours.</p>
-        <div class="proj-tags"><span>Analytics</span><span>Reporting</span><span>Data</span></div>
+
+      <ul class="drawer-nav-list">
+        <li><a href="#home" class="drawer-nav-link active">Home</a></li>
+        <li><a href="#about" class="drawer-nav-link">About</a></li>
+        <li><a href="#experience" class="drawer-nav-link">Experience</a></li>
+        <li><a href="#projects" class="drawer-nav-link">Projects</a></li>
+        <li><a href="#skills" class="drawer-nav-link">Skills</a></li>
+        <li><a href="#certifications" class="drawer-nav-link">Certifications</a></li>
+        <li><a href="#education" class="drawer-nav-link">Education</a></li>
+        <li><a href="#contact" class="drawer-nav-link">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); text-align: center;">
+        &copy; 2026 Ahamed Mihad S
       </div>
     </div>
-  </section>
+  </aside>
 
-  <section id="certs">
-    <div class="section-head"><span class="tag">05 · CREDENTIALS</span><h2>Certifications</h2></div>
-    <div class="cert-list">
-      <div class="cert-row reveal">
-        <div><h4>Advanced Programming, Control, and Monitoring Systems</h4><div class="issuer">Packt · offered through Coursera</div></div>
-        <div class="meta mono">2026</div>
-        <a class="verify" href="https://coursera.org/verify/8HPXSBF4J1U9" target="_blank" rel="noopener">Verify ↗</a>
-      </div>
-      <div class="cert-row reveal">
-        <div><h4>HMI Design and Intermediate PLC Programming</h4><div class="issuer">Packt · offered through Coursera</div></div>
-        <div class="meta mono">2026</div>
-        <a class="verify" href="https://coursera.org/verify/BNOV9K74PQTW" target="_blank" rel="noopener">Verify ↗</a>
-      </div>
-      <div class="cert-row reveal">
-        <div><h4>Siemens PLC and TIA Portal Essentials</h4><div class="issuer">Packt · offered through Coursera</div></div>
-        <div class="meta mono">2026</div>
-        <a class="verify" href="https://coursera.org/verify/SSPNS70Z3UQ3" target="_blank" rel="noopener">Verify ↗</a>
-      </div>
-      <div class="cert-row reveal">
-        <div><h4>BUS250: Introduction to Business Intelligence and Analytics</h4><div class="issuer">Saylor Academy · Grade 92.00 · 46 hrs · ID 1585304664AM</div></div>
-        <div class="meta mono">OCT 2025</div>
-        <span class="verify" style="opacity:.6;cursor:default;">ID 1585304664AM</span>
-      </div>
-      <div class="cert-row reveal">
-        <div><h4>Ignite India — Certified Practice Venture (Aegis)</h4><div class="issuer">Wadhwani Foundation · 42 hrs training · 91.11% viability index</div></div>
-        <div class="meta mono">JUN 2026</div>
-        <span class="verify" style="opacity:.6;cursor:default;">QR Verified</span>
-      </div>
-    </div>
-  </section>
+  <main>
+    <!-- =========================================================================
+         HERO SECTION
+         ========================================================================= -->
+    <section class="hero-section" id="home" aria-label="Hero Section">
+      <div class="container">
+        <div class="hero-grid">
+          
+          <!-- Left Column: Content & Engineering Presentation -->
+          <div class="hero-content">
+            <div class="hero-eyebrow">
+              <span class="hero-eyebrow-badge">ELECTRICAL &amp; ELECTRONICS ENGINEERING</span>
+            </div>
 
-  <footer id="contact">
-    <div class="section-head"><span class="tag">06 · CONTACT</span></div>
-    <h2 class="big">Let's build<br><span>something reliable.</span></h2>
-    <div class="contact-grid">
-      <a class="contact-pill" href="tel:+919566318294"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>+91 95663 18294</a>
-      <a class="contact-pill" href="mailto:ahmdmihadh7@gmail.com"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>ahmdmihadh7@gmail.com</a>
-      <a class="contact-pill" href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>github.com/ahmdmihadh7</a>
-      <a class="contact-pill" href="https://www.linkedin.com/in/ahamedmihad" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>linkedin.com/in/ahamedmihad</a>
-    </div>
-    <div class="foot-bottom">
-      <p>© 2026 AHAMED MIHAD S — DESIGNED &amp; BUILT AS A LIVE CIRCUIT</p>
-      <p>CHENNAI, INDIA</p>
+            <h1 class="hero-title">AHAMED MIHAD S</h1>
+
+            <h2 class="hero-subtitle">
+              Building solutions across EV Systems, Battery Technology &amp; Embedded Engineering.
+            </h2>
+
+            <p class="hero-desc">
+              Electrical and Electronics Engineering student specializing in EV systems, battery pack design, renewable/wind energy, MATLAB/Simulink simulation, embedded systems, PLC programming and HMI design.
+            </p>
+
+            <div class="hero-actions">
+              <a href="#projects" class="btn btn-primary">
+                View Selected Projects
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+              </a>
+
+              <a href="#contact" class="btn btn-secondary">
+                Get In Touch
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </a>
+
+              <a href="#about" class="btn-text">
+                Explore Background
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Column: Profile Image -->
+          <div class="hero-visual">
+            <div class="hero-visual-glow" aria-hidden="true"></div>
+            
+            <div class="portrait-frame">
+              <!-- Technical Framing Corner Accents -->
+              <div class="portrait-corner corner-tl" aria-hidden="true"></div>
+              <div class="portrait-corner corner-tr" aria-hidden="true"></div>
+              <div class="portrait-corner corner-bl" aria-hidden="true"></div>
+              <div class="portrait-corner corner-br" aria-hidden="true"></div>
+
+              <div class="portrait-img-wrapper">
+                <img src="assets/images/profile.jpg" alt="Ahamed Mihad S - Electrical and Electronics Engineer" class="portrait-img" width="400" height="440" fetchpriority="high">
+                <div class="portrait-vignette" aria-hidden="true"></div>
+              </div>
+
+              <!-- Technical Identifier Badge -->
+              <div class="portrait-badge">
+                <div>
+                  <div class="badge-info-title">Ahamed Mihad S</div>
+                  <div class="badge-info-sub">EEE · EV &amp; Embedded Systems</div>
+                </div>
+                <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         QUICK EXPERTISE STRIP
+         ========================================================================= -->
+    <section class="expertise-strip" aria-label="Core Engineering Domains">
+      <div class="container">
+        <ul class="expertise-list">
+          <li class="expertise-item">
+            <span>EV SYSTEMS</span>
+            <span class="expertise-dot" aria-hidden="true"></span>
+          </li>
+          <li class="expertise-item">
+            <span>BATTERY DESIGN</span>
+            <span class="expertise-dot" aria-hidden="true"></span>
+          </li>
+          <li class="expertise-item">
+            <span>EMBEDDED SYSTEMS</span>
+            <span class="expertise-dot" aria-hidden="true"></span>
+          </li>
+          <li class="expertise-item">
+            <span>PLC &amp; HMI</span>
+            <span class="expertise-dot" aria-hidden="true"></span>
+          </li>
+          <li class="expertise-item">
+            <span>RENEWABLE ENERGY</span>
+            <span class="expertise-dot" aria-hidden="true"></span>
+          </li>
+          <li class="expertise-item">
+            <span>MATLAB / SIMULINK</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         ABOUT SECTION
+         ========================================================================= -->
+    <section class="about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">BACKGROUND &amp; PHILOSOPHY</div>
+          <h2 class="section-title">About Me</h2>
+        </div>
+
+        <div class="about-grid">
+          <!-- Left Column: Narrative Introduction -->
+          <div class="about-text">
+            <p>
+              Electrical and Electronics Engineering student specializing in <strong>EV systems</strong>, <strong>battery pack design</strong>, <strong>renewable/wind energy</strong>, and <strong>MATLAB/Simulink simulation</strong>.
+            </p>
+            <p>
+              Experienced through internships in battery pack design, CAD modelling, circuit design, embedded systems and hardware interfacing.
+            </p>
+            <p>
+              Also experienced in Siemens TIA Portal, PLC programming, HMI design, market research, marketing strategy and venture development.
+            </p>
+            <div style="margin-top: 0.5rem;">
+              <a href="#experience" class="btn btn-secondary" style="font-size: 0.875rem;">
+                Explore Professional Experience →
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Column: Engineering Focus Card -->
+          <div class="focus-card">
+            <div class="focus-header">
+              <h3>Engineering Focus</h3>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-green); font-weight: 700;">CORE DOMAINS</span>
+            </div>
+
+            <div class="focus-grid">
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span>EV Systems</span>
+              </div>
+
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/></svg>
+                <span>Battery Technology</span>
+              </div>
+
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+                <span>Embedded Systems</span>
+              </div>
+
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Industrial Automation</span>
+              </div>
+
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v8M12 18v4M4.93 4.93l5.66 5.66M13.41 13.41l5.66 5.66M2 12h8M18 12h4M4.93 19.07l5.66-5.66M13.41 10.59l5.66-5.66"/></svg>
+                <span>Renewable Energy</span>
+              </div>
+
+              <div class="focus-pill">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <span>Simulation &amp; Design</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         EXPERIENCE SECTION
+         ========================================================================= -->
+    <section class="experience-section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">PRACTICAL TRACK RECORD</div>
+          <h2 class="section-title">Experience</h2>
+          <p class="section-desc">
+            Hands-on engineering internships in battery pack engineering, embedded systems lab prototyping, and venture-backed IoT development.
+          </p>
+        </div>
+
+        <div class="timeline">
+
+          <!-- Item 01: SivionX Technologies -->
+          <div class="timeline-item">
+            <div class="timeline-node" aria-hidden="true">01</div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">Electronics &amp; Battery Systems Intern</h3>
+                  <div class="timeline-company">SivionX Technologies Private Limited</div>
+                </div>
+                <div class="timeline-dates">Jun 2026 – Jul 2026</div>
+              </div>
+
+              <ul class="timeline-desc">
+                <li>Learned and applied battery pack design principles, including cell layout and protection-circuit design, for hardware development programs.</li>
+                <li>Produced CAD models for battery pack enclosures and component layout.</li>
+                <li>Contributed to circuit design and prototyping for battery pack assemblies.</li>
+              </ul>
+
+              <div class="timeline-tags">
+                <span class="tag">Battery Pack Design</span>
+                <span class="tag">CAD Layout</span>
+                <span class="tag">Protection Circuit Design</span>
+                <span class="tag">Prototyping</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 02: Pumo Technovation -->
+          <div class="timeline-item">
+            <div class="timeline-node" aria-hidden="true">02</div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">Embedded Systems Intern</h3>
+                  <div class="timeline-company">Pumo Technovation India Pvt Ltd</div>
+                </div>
+                <div class="timeline-dates">Jun 2025 – Jul 2025</div>
+              </div>
+
+              <ul class="timeline-desc">
+                <li>Completed hands-on training in core embedded systems concepts in an offline lab environment.</li>
+                <li>Programmed microcontrollers in Embedded C for hardware interfacing tasks.</li>
+                <li>Completed assigned technical tasks covering embedded programming end to end.</li>
+              </ul>
+
+              <div class="timeline-tags">
+                <span class="tag">Embedded C</span>
+                <span class="tag">Microcontrollers</span>
+                <span class="tag">Hardware Interfacing</span>
+                <span class="tag">Lab Development</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 03: Aegis Venture -->
+          <div class="timeline-item">
+            <div class="timeline-node" aria-hidden="true">03</div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3 class="timeline-role">Marketing Lead — Aegis Venture</h3>
+                  <div class="timeline-company">Ignite India, Wadhwani Foundation · B.S. Abdur Rahman Crescent Institute of Science and Technology</div>
+                </div>
+                <div class="timeline-dates">Jun 2026</div>
+              </div>
+
+              <ul class="timeline-desc">
+                <li>Completed a 42-hour entrepreneurship training program covering venture building end to end.</li>
+                <li>Led market research and marketing strategy for Aegis.</li>
+                <li>Aegis is a camera-free IoT elderly-safety device using ESP32, mmWave/PIR sensors and GSM alerts.</li>
+                <li>Achieved a 91.11% viability index and recognition for excellence and real-world impact.</li>
+              </ul>
+
+              <div class="timeline-highlight-box">
+                <span class="highlight-val">91.11%</span>
+                <span class="highlight-label">Aegis Venture Viability Index</span>
+              </div>
+
+              <div class="timeline-tags">
+                <span class="tag">Venture Building</span>
+                <span class="tag">IoT (ESP32 / mmWave)</span>
+                <span class="tag">Market Research</span>
+                <span class="tag">Marketing Strategy</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         PROJECTS SECTION (6 HIGH-IMPACT PROJECTS)
+         ========================================================================= -->
+    <section class="projects-section" id="projects">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">PORTFOLIO WORK</div>
+          <h2 class="section-title">Selected Projects</h2>
+          <p class="section-desc">
+            Technical projects spanning battery pack CAD modeling, IoT elderly safety, embedded microcontroller programming, industrial automation, and renewable energy simulation.
+          </p>
+        </div>
+
+        <div class="projects-grid">
+
+          <!-- Project 01 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 01</span>
+                <span class="project-category">Battery Systems / CAD</span>
+              </div>
+              <h3 class="project-title">Battery Pack Design &amp; Prototyping</h3>
+              <p class="project-desc">
+                Designed and prototyped a battery pack, including CAD layout of the enclosure and cell arrangement and circuit design for protection and assembly.
+              </p>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">Battery Pack Design</span>
+                <span class="tag">CAD</span>
+                <span class="tag">Circuit Design</span>
+                <span class="tag">Prototyping</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('battery-pack')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Project 02 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 02</span>
+                <span class="project-category">Embedded IoT / Venture</span>
+              </div>
+              <h3 class="project-title">Aegis: IoT Elderly-Safety Device</h3>
+              <p class="project-desc">
+                Camera-free smart safety device utilizing ESP32 microcontroller, mmWave radar, PIR sensors, and GSM emergency alerts. Achieved 91.11% viability index.
+              </p>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">ESP32</span>
+                <span class="tag">mmWave Radar</span>
+                <span class="tag">GSM Alerts</span>
+                <span class="tag">IoT</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('aegis-iot')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Project 03 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 03</span>
+                <span class="project-category">Embedded Systems</span>
+              </div>
+              <h3 class="project-title">Embedded Hardware Interfacing &amp; Firmware</h3>
+              <p class="project-desc">
+                Built and tested microcontroller-driven hardware interfacing tasks covering core embedded programming concepts in Embedded C and offline lab prototyping.
+              </p>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">Embedded C</span>
+                <span class="tag">Microcontrollers</span>
+                <span class="tag">Hardware Interfacing</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('embedded-hardware')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Project 04 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 04</span>
+                <span class="project-category">Industrial Automation</span>
+              </div>
+              <h3 class="project-title">Industrial HMI + PLC Control System</h3>
+              <p class="project-desc">
+                Combined Siemens TIA Portal PLC programming with HMI screen design to monitor and control an automated process with safety loops and real-time alarms.
+              </p>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">Siemens TIA Portal</span>
+                <span class="tag">PLC</span>
+                <span class="tag">HMI</span>
+                <span class="tag">Automation</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('hmi-plc')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Project 05 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 05</span>
+                <span class="project-category">Simulation &amp; Power</span>
+              </div>
+              <h3 class="project-title">Renewable Energy &amp; Wind Power Simulation</h3>
+              <p class="project-desc">
+                Designed dynamic mathematical and control models in MATLAB and Simulink to simulate wind energy conversion systems and transient grid response.
+              </p>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">MATLAB</span>
+                <span class="tag">Simulink</span>
+                <span class="tag">Wind Energy</span>
+                <span class="tag">Simulation</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('renewable-sim')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+          <!-- Project 06 -->
+          <article class="project-card">
+            <div class="project-card-top">
+              <div class="project-meta">
+                <span class="project-number">PROJECT 06</span>
+                <span class="project-category">Renewable Energy / Grid</span>
+              </div>
+              <h3 class="project-title">Grid Integration of Renewable Energy Systems</h3>
+              <p class="project-desc">
+                Analyzed real-world Indian renewable energy installations across solar, wind, and hydroelectric infrastructures:
+              </p>
+              
+              <div class="project-sites-list">
+                <div class="project-sites-title">Analyzed Installations</div>
+                <ul class="project-sites-items">
+                  <li>Bhadla Solar Park</li>
+                  <li>Pavagada Solar Park</li>
+                  <li>Jaisalmer Wind Park</li>
+                  <li>Koyna Hydro</li>
+                  <li>NTPC Ramagundam</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="project-footer">
+              <div class="project-tags">
+                <span class="tag">Renewable Energy</span>
+                <span class="tag">Grid Integration</span>
+                <span class="tag">Solar</span>
+                <span class="tag">Wind</span>
+                <span class="tag">Hydro</span>
+              </div>
+              <button type="button" class="project-action-btn" onclick="showProjectModal('grid-renewable')">
+                View Project Details
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         TECHNICAL STACK (SKILLS)
+         ========================================================================= -->
+    <section class="skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">SKILLS &amp; PROFICIENCIES</div>
+          <h2 class="section-title">Technical Stack</h2>
+          <p class="section-desc">
+            Categorized technical capabilities and engineering tooling applied in academic, research, and internship programs.
+          </p>
+        </div>
+
+        <div class="skills-grid">
+
+          <!-- Category 01: Energy Systems -->
+          <div class="skill-category-card">
+            <div class="skill-card-header">
+              <div class="skill-icon-box">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div>
+                <h3 class="skill-card-title">Energy Systems</h3>
+                <span class="skill-card-sub">EV &amp; Grid Dynamics</span>
+              </div>
+            </div>
+            <div class="skill-chips">
+              <div class="skill-chip">
+                <span>Electric Vehicle (EV) Powertrain Fundamentals</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Battery Pack Design</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Renewable Energy Systems</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Wind Energy Fundamentals</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Grid Integration of Renewable Energy</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 02: Simulation & Design -->
+          <div class="skill-category-card">
+            <div class="skill-card-header">
+              <div class="skill-icon-box">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div>
+                <h3 class="skill-card-title">Simulation &amp; Design</h3>
+                <span class="skill-card-sub">CAD &amp; Modelling</span>
+              </div>
+            </div>
+            <div class="skill-chips">
+              <div class="skill-chip">
+                <span>MATLAB</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Simulink</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>CAD Modelling</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Circuit Design</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Schematic Design</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Prototyping</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 03: Embedded & Controls -->
+          <div class="skill-category-card">
+            <div class="skill-card-header">
+              <div class="skill-icon-box">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+              </div>
+              <div>
+                <h3 class="skill-card-title">Embedded &amp; Controls</h3>
+                <span class="skill-card-sub">Hardware &amp; Automation</span>
+              </div>
+            </div>
+            <div class="skill-chips">
+              <div class="skill-chip">
+                <span>Embedded Systems</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Microcontroller Programming</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Embedded C</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Hardware Interfacing</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Siemens TIA Portal</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>PLC Programming</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>HMI Design</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category 04: Business & Analytics -->
+          <div class="skill-category-card">
+            <div class="skill-card-header">
+              <div class="skill-icon-box">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </div>
+              <div>
+                <h3 class="skill-card-title">Business &amp; Analytics</h3>
+                <span class="skill-card-sub">Strategy &amp; Insights</span>
+              </div>
+            </div>
+            <div class="skill-chips">
+              <div class="skill-chip">
+                <span>Business Intelligence &amp; Analytics</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Market Research</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Marketing Strategy</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+              <div class="skill-chip">
+                <span>Technical Documentation</span>
+                <span class="skill-chip-dot"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         CERTIFICATIONS SECTION
+         ========================================================================= -->
+    <section class="certs-section" id="certifications">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">VERIFIED CREDENTIALS</div>
+          <h2 class="section-title">Certifications</h2>
+          <p class="section-desc">
+            Professional certifications and accredited technical learning in industrial control systems, PLC/HMI engineering, and enterprise analytics.
+          </p>
+        </div>
+
+        <div class="certs-grid">
+
+          <!-- Cert 01 -->
+          <div class="cert-card" onclick="showCertModal('cert-1')">
+            <div class="cert-top">
+              <div class="cert-issuer-badge">Packt / Coursera</div>
+              <h3 class="cert-title">Advanced Programming, Control, and Monitoring Systems</h3>
+              <p class="cert-issuer-text">Industrial control logic &amp; supervisory systems</p>
+            </div>
+            <div class="cert-footer">
+              <span class="cert-meta">2026</span>
+              <span class="cert-link-btn">
+                Details
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Cert 02 -->
+          <div class="cert-card" onclick="showCertModal('cert-2')">
+            <div class="cert-top">
+              <div class="cert-issuer-badge">Packt / Coursera</div>
+              <h3 class="cert-title">HMI Design and Intermediate PLC Programming</h3>
+              <p class="cert-issuer-text">Operator interfaces and structured ladder logic</p>
+            </div>
+            <div class="cert-footer">
+              <span class="cert-meta">2026</span>
+              <span class="cert-link-btn">
+                Details
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Cert 03 -->
+          <div class="cert-card" onclick="showCertModal('cert-3')">
+            <div class="cert-top">
+              <div class="cert-issuer-badge">Packt / Coursera</div>
+              <h3 class="cert-title">Siemens PLC and TIA Portal Essentials</h3>
+              <p class="cert-issuer-text">Hardware configuration &amp; Siemens automation routines</p>
+            </div>
+            <div class="cert-footer">
+              <span class="cert-meta">2026</span>
+              <span class="cert-link-btn">
+                Details
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Cert 04 -->
+          <div class="cert-card" onclick="showCertModal('cert-4')">
+            <div class="cert-top">
+              <div class="cert-issuer-badge">Saylor Academy</div>
+              <h3 class="cert-title">Introduction to Business Intelligence and Analytics (BUS250)</h3>
+              <p class="cert-issuer-text">Grade: 92/100 · 46 hours comprehensive assessment</p>
+            </div>
+            <div class="cert-footer">
+              <span class="cert-meta">October 2025</span>
+              <span class="cert-link-btn">
+                Details
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Cert 05 -->
+          <div class="cert-card" onclick="showCertModal('cert-5')">
+            <div class="cert-top">
+              <div class="cert-issuer-badge">Wadhwani Foundation</div>
+              <h3 class="cert-title">Ignite India — Certified Practice Venture (Aegis)</h3>
+              <p class="cert-issuer-text">42-Hour Program · 91.11% viability index recognition</p>
+            </div>
+            <div class="cert-footer">
+              <span class="cert-meta">June 2026</span>
+              <span class="cert-link-btn">
+                Details
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         EDUCATION & HIGHLIGHTS SECTION
+         ========================================================================= -->
+    <section class="education-section" id="education">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-eyebrow">ACADEMIC &amp; IMPACT METRICS</div>
+          <h2 class="section-title">Education &amp; Key Highlights</h2>
+        </div>
+
+        <div class="edu-grid">
+
+          <!-- Left Side: Formal Education Card -->
+          <div class="edu-card">
+            <span class="edu-badge">UNDERGRADUATE DEGREE</span>
+            <h3 class="edu-degree">B.Tech in Electrical &amp; Electronics Engineering</h3>
+            <div class="edu-institution">B.S. Abdur Rahman Crescent Institute of Science and Technology</div>
+            <div class="edu-location">Chennai, Tamil Nadu, India</div>
+
+            <div class="edu-meta-box">
+              <span class="edu-meta-label">Expected Graduation</span>
+              <span class="edu-meta-val">2027</span>
+            </div>
+          </div>
+
+          <!-- Right Side: Key Highlights Section -->
+          <div class="highlights-container">
+            <h3 class="highlights-title">Highlights</h3>
+            <div class="highlights-grid">
+              
+              <div class="highlight-card">
+                <div class="highlight-number">91.11%</div>
+                <div class="highlight-desc">Aegis Venture Viability Index</div>
+              </div>
+
+              <div class="highlight-card">
+                <div class="highlight-number">42 hrs</div>
+                <div class="highlight-desc">Entrepreneurship Training</div>
+              </div>
+
+              <div class="highlight-card">
+                <div class="highlight-number">92/100</div>
+                <div class="highlight-desc">BUS250 Assessment Grade</div>
+              </div>
+
+              <div class="highlight-card">
+                <div class="highlight-number">2027</div>
+                <div class="highlight-desc">Expected B.Tech Graduation</div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         CAREER INTERESTS SECTION
+         ========================================================================= -->
+    <section class="interests-section" aria-label="Career Interests">
+      <div class="container">
+        <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+          <div class="section-eyebrow" style="justify-content: center;">FUTURE TRAJECTORY</div>
+          <h2 class="section-title">Areas I'm Interested In</h2>
+        </div>
+
+        <div class="interests-grid">
+          
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div class="interest-name">EV Systems</div>
+          </div>
+
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="16" height="10" rx="2"/><path d="M22 11v2"/></svg>
+            </div>
+            <div class="interest-name">Battery Technology</div>
+          </div>
+
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+            </div>
+            <div class="interest-name">Embedded Systems</div>
+          </div>
+
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="interest-name">Power Electronics</div>
+          </div>
+
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v8M12 18v4M4.93 4.93l5.66 5.66M13.41 13.41l5.66 5.66M2 12h8M18 12h4M4.93 19.07l5.66-5.66M13.41 10.59l5.66-5.66"/></svg>
+            </div>
+            <div class="interest-name">Renewable Energy</div>
+          </div>
+
+          <div class="interest-card">
+            <div class="interest-icon">
+              <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </div>
+            <div class="interest-name">Industrial Automation</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         CONTACT SECTION
+         ========================================================================= -->
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="contact-grid">
+
+          <!-- Left Column: Details & Direct Channels -->
+          <div class="contact-info">
+            <div class="section-eyebrow">GET IN TOUCH</div>
+            <h2 class="contact-headline">Let's Build Something Meaningful.</h2>
+            <p class="contact-sub">
+              Interested in engineering, EV systems, embedded technologies, renewable energy or technical collaboration? Let's connect.
+            </p>
+
+            <div class="contact-cards-list">
+              
+              <!-- Email Item -->
+              <div class="contact-card-item">
+                <div class="contact-card-left">
+                  <div class="contact-icon-box">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                  </div>
+                  <div>
+                    <div class="contact-type">Email</div>
+                    <a href="mailto:ahmdmihadh7@gmail.com" class="contact-val">ahmdmihadh7@gmail.com</a>
+                  </div>
+                </div>
+                <button type="button" class="copy-btn" onclick="copyToClipboard('ahmdmihadh7@gmail.com', 'Email')">Copy</button>
+              </div>
+
+              <!-- Phone Item -->
+              <div class="contact-card-item">
+                <div class="contact-card-left">
+                  <div class="contact-icon-box">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  </div>
+                  <div>
+                    <div class="contact-type">Phone</div>
+                    <a href="tel:+919566318294" class="contact-val">+91 95663 18294</a>
+                  </div>
+                </div>
+                <button type="button" class="copy-btn" onclick="copyToClipboard('+919566318294', 'Phone number')">Copy</button>
+              </div>
+
+              <!-- LinkedIn Item -->
+              <div class="contact-card-item">
+                <div class="contact-card-left">
+                  <div class="contact-icon-box">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  </div>
+                  <div>
+                    <div class="contact-type">LinkedIn</div>
+                    <a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer" class="contact-val">linkedin.com/in/ahamedmihad</a>
+                  </div>
+                </div>
+                <a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer" class="copy-btn">Open ↗</a>
+              </div>
+
+              <!-- GitHub Item -->
+              <div class="contact-card-item">
+                <div class="contact-card-left">
+                  <div class="contact-icon-box">
+                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  </div>
+                  <div>
+                    <div class="contact-type">GitHub</div>
+                    <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer" class="contact-val">github.com/ahmdmihadh7</a>
+                  </div>
+                </div>
+                <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer" class="copy-btn">Open ↗</a>
+              </div>
+
+            </div>
+
+            <!-- Quick Action Links (No Resume references) -->
+            <div class="contact-quick-buttons">
+              <a href="mailto:ahmdmihadh7@gmail.com" class="btn btn-primary" style="font-size: 0.85rem;">
+                Email Me Directly
+              </a>
+              <a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.85rem;">
+                LinkedIn
+              </a>
+              <a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.85rem;">
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Column: Interactive Contact Form -->
+          <div class="contact-form-card">
+            <div class="form-header">
+              <h3>Send a Message</h3>
+              <p style="font-size: 0.875rem;">Direct inquiry or collaboration proposal.</p>
+            </div>
+
+            <form id="contactForm" novalidate>
+              <div class="form-group">
+                <label for="formName" class="form-label">Your Name</label>
+                <input type="text" id="formName" name="name" class="form-input" placeholder="e.g. Alex Henderson" required>
+              </div>
+
+              <div class="form-group">
+                <label for="formEmail" class="form-label">Email Address</label>
+                <input type="email" id="formEmail" name="email" class="form-input" placeholder="e.g. alex@company.com" required>
+              </div>
+
+              <div class="form-group">
+                <label for="formSubject" class="form-label">Subject / Purpose</label>
+                <input type="text" id="formSubject" name="subject" class="form-input" placeholder="e.g. EV Engineering Internship / Collaboration" required>
+              </div>
+
+              <div class="form-group">
+                <label for="formMessage" class="form-label">Message</label>
+                <textarea id="formMessage" name="message" class="form-textarea" placeholder="Describe the opportunity, technical scope, or question..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Send Message
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+
+              <div id="formStatus" class="form-status" role="alert"></div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>AHAMED MIHAD S</h4>
+          <p>Electrical &amp; Electronics Engineering · EV Systems · Battery Design · Embedded Systems</p>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="https://linkedin.com/in/ahamedmihad" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+          <li><a href="https://github.com/ahmdmihadh7" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="mailto:ahmdmihadh7@gmail.com">Email</a></li>
+          <li><a href="tel:+919566318294">Phone</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 Ahamed Mihad S. All rights reserved.</div>
+        <div>Designed for Technical Rigor &amp; Professional Performance</div>
+      </div>
     </div>
   </footer>
 
-</main>
+  <!-- =========================================================================
+       MODAL DIALOG
+       ========================================================================= -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close dialog">&times;</button>
+      <h3 id="modalTitle" style="font-size: 1.35rem; margin-bottom: 1rem; color: var(--text-primary);"></h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
 
-<button id="to-top" title="Back to top" aria-label="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
-</button>
+  <!-- Toast Notification -->
+  <div class="toast-container" aria-live="polite">
+    <div class="toast" id="toast">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: var(--accent-green);"><polyline points="20 6 9 17 4 12"/></svg>
+      <span id="toastMessage">Copied to clipboard!</span>
+    </div>
+  </div>
 
-<script>
-/* ---------- boot loader ---------- */
-(function(){
-  const text = document.getElementById('loader-text');
-  const bar = document.getElementById('loader-bar-fill');
-  const loader = document.getElementById('loader');
-  const name = 'AHAMED MIHAD';
-  let i = 0;
-  function typeChar(){
-    if(i <= name.length){
-      text.textContent = name.slice(0, i);
-      i++;
-      setTimeout(typeChar, 85);
-    } else {
-      bar.style.width = '100%';
-      setTimeout(finish, 900);
-    }
-  }
-  function finish(){
-    loader.classList.add('hide');
-    document.body.classList.add('loaded');
-    setTimeout(()=> loader.remove(), 700);
-  }
-  window.addEventListener('load', ()=> setTimeout(typeChar, 350));
-  // failsafe: never trap the user behind the loader
-  setTimeout(()=>{ if(!document.body.classList.contains('loaded')) finish(); }, 6000);
-})();
+  <!-- Floating Scroll To Top Button -->
+  <button type="button" class="scroll-top-btn" id="scrollTopBtn" aria-label="Scroll to top of page">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
 
-/* ---------- mobile nav toggle ---------- */
-const navToggle = document.getElementById('nav-toggle');
-const navEl = document.querySelector('nav');
-navToggle.addEventListener('click', ()=>{
-  const open = navEl.classList.toggle('open');
-  navToggle.classList.toggle('open', open);
-  navToggle.setAttribute('aria-expanded', open);
-});
-document.querySelectorAll('nav a').forEach(a=>{
-  a.addEventListener('click', ()=>{
-    navEl.classList.remove('open');
-    navToggle.classList.remove('open');
-    navToggle.setAttribute('aria-expanded','false');
-  });
-});
-window.addEventListener('resize', ()=>{
-  if(innerWidth > 900){
-    navEl.classList.remove('open');
-    navToggle.classList.remove('open');
-  }
-});
-
-/* ---------- custom cursor ---------- */
-const dot = document.getElementById('cursor-dot');
-const ring = document.getElementById('cursor-ring');
-let mx=innerWidth/2,my=innerHeight/2, rx=mx, ry=my;
-window.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-(function loop(){ rx += (mx-rx)*0.16; ry += (my-ry)*0.16; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
-document.querySelectorAll('a, .skill-mod, .proj-card, .cert-row, .contact-pill, #to-top').forEach(el=>{
-  el.addEventListener('mouseenter', ()=>ring.classList.add('hover'));
-  el.addEventListener('mouseleave', ()=>ring.classList.remove('hover'));
-});
-
-/* ---------- project card cursor-glow ---------- */
-document.querySelectorAll('.proj-card').forEach(card=>{
-  card.addEventListener('mousemove', e=>{
-    const r = card.getBoundingClientRect();
-    card.style.setProperty('--mx', (e.clientX-r.left)+'px');
-    card.style.setProperty('--my', (e.clientY-r.top)+'px');
-  });
-});
-
-/* ---------- scroll reveal ---------- */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } });
-}, { threshold:0.18 });
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-/* ---------- spine pulse follows scroll ---------- */
-const pulse = document.getElementById('spine-pulse');
-function updatePulse(){
-  const docH = document.documentElement.scrollHeight - innerHeight;
-  const p = docH>0 ? window.scrollY/docH : 0;
-  pulse.style.top = (p*(document.documentElement.scrollHeight-120))+'px';
-}
-window.addEventListener('scroll', updatePulse, {passive:true});
-updatePulse();
-
-/* ---------- header active-link highlight on scroll ---------- */
-const navLinks = document.querySelectorAll('nav a');
-const sections = [...navLinks].map(a=>document.querySelector(a.getAttribute('href')));
-function updateActiveNav(){
-  let idx=0;
-  sections.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top < innerHeight*0.4) idx=i; });
-  navLinks.forEach((a,i)=> a.classList.toggle('active', i===idx));
-}
-window.addEventListener('scroll', updateActiveNav, {passive:true});
-updateActiveNav();
-
-/* ---------- back-to-top toggle ---------- */
-const toTop = document.getElementById('to-top');
-window.addEventListener('scroll', ()=>{
-  toTop.classList.toggle('show', window.scrollY > innerHeight*0.6);
-}, {passive:true});
-toTop.addEventListener('click', ()=> window.scrollTo({ top:0, behavior:'smooth' }));
-
-/* ---------- animated circuit-board background ---------- */
-const canvas = document.getElementById('circuit-bg');
-const ctx = canvas.getContext('2d');
-let W,H, nodes=[], pulses=[];
-function resize(){ W=canvas.width=innerWidth; H=canvas.height=document.documentElement.scrollHeight; }
-resize();
-window.addEventListener('resize', resize);
-
-// build a grid-based circuit trace network
-function buildNetwork(){
-  nodes = [];
-  const cols = Math.floor(W/140)+1, rows = Math.floor(H/140)+1;
-  for(let r=0;r<rows;r++){
-    for(let c=0;c<cols;c++){
-      if(Math.random() > 0.55) continue;
-      nodes.push({
-        x: c*140 + (Math.random()*60-30),
-        y: r*140 + (Math.random()*60-30),
-        links: []
-      });
-    }
-  }
-  nodes.forEach((n,i)=>{
-    nodes.forEach((m,j)=>{
-      if(i===j) return;
-      const dx=n.x-m.x, dy=n.y-m.y;
-      const dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < 170 && Math.random()>0.65){ n.links.push(m); }
-    });
-  });
-  pulses = [];
-  for(let i=0;i<18;i++){ spawnPulse(); }
-}
-function spawnPulse(){
-  const n = nodes[Math.floor(Math.random()*nodes.length)];
-  if(!n || n.links.length===0) return;
-  const target = n.links[Math.floor(Math.random()*n.links.length)];
-  pulses.push({ from:n, to:target, t:Math.random() });
-}
-buildNetwork();
-
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  ctx.strokeStyle = 'rgba(30,53,45,0.9)';
-  ctx.lineWidth = 1;
-  nodes.forEach(n=>{
-    n.links.forEach(m=>{
-      ctx.beginPath(); ctx.moveTo(n.x,n.y); ctx.lineTo(m.x,m.y); ctx.stroke();
-    });
-  });
-  ctx.fillStyle = 'rgba(79,216,196,0.35)';
-  nodes.forEach(n=>{ ctx.beginPath(); ctx.arc(n.x,n.y,1.6,0,Math.PI*2); ctx.fill(); });
-
-  pulses.forEach(p=>{
-    p.t += 0.006;
-    if(p.t>1){ p.t=0; }
-    const x = p.from.x + (p.to.x-p.from.x)*p.t;
-    const y = p.from.y + (p.to.y-p.from.y)*p.t;
-    const grad = ctx.createRadialGradient(x,y,0,x,y,7);
-    grad.addColorStop(0,'rgba(227,171,94,0.95)');
-    grad.addColorStop(1,'rgba(227,171,94,0)');
-    ctx.fillStyle = grad;
-    ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fill();
-  });
-  requestAnimationFrame(draw);
-}
-draw();
-window.addEventListener('resize', ()=>{ clearTimeout(window._rt); window._rt=setTimeout(()=>{ resize(); buildNetwork(); }, 300); });
-</script>
+  <!-- JavaScript -->
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
