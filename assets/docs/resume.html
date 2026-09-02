@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ahamed Mihad S - Resume | Electrical & Electronics Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F110F;
+      --paper: #181B18;
+      --border: #2A3029;
+      --text: #F2F1EC;
+      --text-muted: #9A9A94;
+      --accent: #6B8E6E;
+      --accent-light: #849B86;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .resume-container {
+      width: 100%;
+      max-width: 850px;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .header .title {
+      font-size: 1.05rem;
+      color: var(--accent-light);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .contact-info {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: right;
+    }
+    .contact-info a {
+      color: var(--text);
+      text-decoration: none;
+    }
+    .contact-info a:hover {
+      color: var(--accent-light);
+      text-decoration: underline;
+    }
+    .actions-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #0F110F;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: var(--accent-light);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+    .section {
+      margin-bottom: 28px;
+    }
+    .section-title {
+      font-size: 0.9rem;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-light);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+    .summary-text {
+      font-size: 0.95rem;
+      color: #D4D3CC;
+      line-height: 1.6;
+    }
+    .item {
+      margin-bottom: 20px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .item-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .item-subtitle {
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .item-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .item-desc {
+      list-style-position: inside;
+      font-size: 0.9rem;
+      color: #CAC9C3;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .skill-cat {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .skill-cat-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      margin-bottom: 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      text-transform: uppercase;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      background: #222721;
+      border: 1px solid rgba(107,142,110,0.25);
+      color: #E2E1DC;
+      font-size: 0.8rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .cert-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    .cert-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .cert-issuer {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      body {
+        background: #FFF !important;
+        color: #111 !important;
+        padding: 0;
+      }
+      .actions-bar {
+        display: none !important;
+      }
+      .resume-container {
+        background: #FFF !important;
+        color: #111 !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .header {
+        border-bottom: 2px solid #333 !important;
+      }
+      .header h1, .item-title, .cert-name {
+        color: #000 !important;
+      }
+      .header .title, .item-subtitle, .section-title, .skill-cat-title {
+        color: #2e5932 !important;
+      }
+      .contact-info, .item-meta, .cert-issuer, .summary-text, .item-desc {
+        color: #333 !important;
+      }
+      .tag {
+        background: #f0f0f0 !important;
+        color: #111 !important;
+        border: 1px solid #ccc !important;
+      }
+      .skill-cat {
+        background: #fafafa !important;
+        border: 1px solid #e0e0e0 !important;
+      }
+      .section-title {
+        border-bottom: 1px solid #ccc !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="resume-container">
+    <div class="actions-bar">
+      <button class="btn" onclick="window.print()">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Print / Save as PDF
+      </button>
+      <a href="../images/profile.jpg" target="_blank" class="btn btn-secondary">
+        View Profile Photo
+      </a>
+      <a href="../../index.html" class="btn btn-secondary">
+        ← Back to Website
+      </a>
+    </div>
+
+    <header class="header">
+      <div>
+        <h1>AHAMED MIHAD S</h1>
+        <div class="title">Electrical & Electronics Engineer | EV Systems, Battery Design & Embedded Systems</div>
+      </div>
+      <div class="contact-info">
+        <div>Email: <a href="mailto:ahmdmihadh7@gmail.com">ahmdmihadh7@gmail.com</a></div>
+        <div>Phone: <a href="tel:+919566318294">+91 95663 18294</a></div>
+        <div>LinkedIn: <a href="https://linkedin.com/in/ahamedmihad" target="_blank">linkedin.com/in/ahamedmihad</a></div>
+        <div>GitHub: <a href="https://github.com/ahmdmihadh7" target="_blank">github.com/ahmdmihadh7</a></div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section-title">Professional Summary</div>
+      <p class="summary-text">
+        Electrical and Electronics Engineering student specializing in EV systems, battery pack design, renewable/wind energy, MATLAB/Simulink simulation, embedded systems, PLC programming and HMI design. Experienced through internships in battery pack design, CAD modelling, circuit design, embedded systems and hardware interfacing, alongside venture development in IoT elderly-safety systems.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Education</div>
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">B.Tech — Electrical and Electronics Engineering</div>
+            <div class="item-subtitle">B.S. Abdur Rahman Crescent Institute of Science and Technology, Chennai</div>
+          </div>
+          <div class="item-meta">Expected Graduation: 2027</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Experience & Internships</div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">Electronics & Battery Systems Intern</div>
+            <div class="item-subtitle">SivionX Technologies Private Limited</div>
+          </div>
+          <div class="item-meta">Jun 2026 – Jul 2026</div>
+        </div>
+        <ul class="item-desc">
+          <li>Learned and applied battery pack design principles, including cell layout and protection-circuit design, for hardware development programs.</li>
+          <li>Produced CAD models for battery pack enclosures and component layout.</li>
+          <li>Contributed to circuit design and prototyping for battery pack assemblies.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">Embedded Systems Intern</div>
+            <div class="item-subtitle">Pumo Technovation India Pvt Ltd</div>
+          </div>
+          <div class="item-meta">Jun 2025 – Jul 2025</div>
+        </div>
+        <ul class="item-desc">
+          <li>Completed hands-on training in core embedded systems concepts in an offline lab environment.</li>
+          <li>Programmed microcontrollers in Embedded C for hardware interfacing tasks.</li>
+          <li>Completed assigned technical tasks covering embedded programming end to end.</li>
+        </ul>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div>
+            <div class="item-title">Marketing Lead — Aegis Venture</div>
+            <div class="item-subtitle">Ignite India, Wadhwani Foundation · B.S. Abdur Rahman Crescent Institute of Science and Technology</div>
+          </div>
+          <div class="item-meta">Jun 2026</div>
+        </div>
+        <ul class="item-desc">
+          <li>Completed a 42-hour entrepreneurship training program covering venture building end to end.</li>
+          <li>Led market research and marketing strategy for Aegis (camera-free IoT elderly-safety device utilizing ESP32, mmWave/PIR sensors, and GSM alerts).</li>
+          <li>Achieved a 91.11% viability index and recognition for excellence and real-world impact.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Selected Projects</div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Battery Pack Design & Prototyping</div>
+          <div class="item-meta">Battery Systems / CAD / Circuit Design</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Designed and prototyped a battery pack, including CAD layout of the enclosure and cell arrangement and circuit design for protection and assembly.
+        </p>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Aegis: IoT Elderly-Safety Device</div>
+          <div class="item-meta">Embedded Systems / IoT / ESP32</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Camera-free smart safety device utilizing ESP32 microcontroller, mmWave radar, PIR sensors, and GSM emergency alerts. Awarded 91.11% viability index.
+        </p>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Embedded Hardware Interfacing & Firmware</div>
+          <div class="item-meta">Embedded Systems</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Built and tested microcontroller-driven hardware interfacing tasks covering core embedded programming concepts in Embedded C.
+        </p>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Industrial HMI + PLC Control System</div>
+          <div class="item-meta">Industrial Automation</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Combined Siemens TIA Portal PLC programming with HMI screen design to monitor and control an automated process.
+        </p>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Renewable Energy & Wind Power Simulation</div>
+          <div class="item-meta">Simulation & Design / MATLAB Simulink</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Designed dynamic mathematical and control models in MATLAB and Simulink to simulate wind energy conversion systems and transient grid dynamics.
+        </p>
+      </div>
+
+      <div class="item">
+        <div class="item-header">
+          <div class="item-title">Grid Integration of Renewable Energy Systems</div>
+          <div class="item-meta">Renewable Energy</div>
+        </div>
+        <p class="summary-text" style="font-size:0.9rem; margin-top:4px;">
+          Analyzed real-world Indian renewable energy installations including Bhadla Solar Park, Pavagada Solar Park, Jaisalmer Wind Park, Koyna Hydro, and NTPC Ramagundam Floating Solar.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Technical Skills</div>
+      <div class="skills-grid">
+        <div class="skill-cat">
+          <div class="skill-cat-title">Energy Systems</div>
+          <div class="skill-tags">
+            <span class="tag">EV Powertrain Fundamentals</span>
+            <span class="tag">Battery Pack Design</span>
+            <span class="tag">Renewable Energy Systems</span>
+            <span class="tag">Wind Energy Fundamentals</span>
+            <span class="tag">Grid Integration</span>
+          </div>
+        </div>
+
+        <div class="skill-cat">
+          <div class="skill-cat-title">Simulation & Design</div>
+          <div class="skill-tags">
+            <span class="tag">MATLAB</span>
+            <span class="tag">Simulink</span>
+            <span class="tag">CAD Modelling</span>
+            <span class="tag">Circuit Design</span>
+            <span class="tag">Schematic Design</span>
+            <span class="tag">Prototyping</span>
+          </div>
+        </div>
+
+        <div class="skill-cat">
+          <div class="skill-cat-title">Embedded & Controls</div>
+          <div class="skill-tags">
+            <span class="tag">Embedded Systems</span>
+            <span class="tag">Microcontrollers</span>
+            <span class="tag">Embedded C</span>
+            <span class="tag">Hardware Interfacing</span>
+            <span class="tag">Siemens TIA Portal</span>
+            <span class="tag">PLC Programming</span>
+            <span class="tag">HMI Design</span>
+          </div>
+        </div>
+
+        <div class="skill-cat">
+          <div class="skill-cat-title">Business & Analytics</div>
+          <div class="skill-tags">
+            <span class="tag">Business Intelligence</span>
+            <span class="tag">Data Analytics</span>
+            <span class="tag">Market Research</span>
+            <span class="tag">Marketing Strategy</span>
+            <span class="tag">Technical Documentation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Certifications</div>
+      <div class="cert-item">
+        <div>
+          <div class="cert-name">Advanced Programming, Control, and Monitoring Systems</div>
+          <div class="cert-issuer">Packt / Coursera</div>
+        </div>
+        <div class="item-meta">2026</div>
+      </div>
+      <div class="cert-item">
+        <div>
+          <div class="cert-name">HMI Design and Intermediate PLC Programming</div>
+          <div class="cert-issuer">Packt / Coursera</div>
+        </div>
+        <div class="item-meta">2026</div>
+      </div>
+      <div class="cert-item">
+        <div>
+          <div class="cert-name">Siemens PLC and TIA Portal Essentials</div>
+          <div class="cert-issuer">Packt / Coursera</div>
+        </div>
+        <div class="item-meta">2026</div>
+      </div>
+      <div class="cert-item">
+        <div>
+          <div class="cert-name">Introduction to Business Intelligence and Analytics (BUS250)</div>
+          <div class="cert-issuer">Saylor Academy · Grade: 92/100 (46 hours)</div>
+        </div>
+        <div class="item-meta">Oct 2025</div>
+      </div>
+      <div class="cert-item">
+        <div>
+          <div class="cert-name">Ignite India — Certified Practice Venture (Aegis)</div>
+          <div class="cert-issuer">Wadhwani Foundation · 91.11% Viability Index</div>
+        </div>
+        <div class="item-meta">Jun 2026</div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

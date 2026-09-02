@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#171A17"/>
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="#6B8E6E" stroke-opacity="0.4" stroke-width="1.5"/>
+  <!-- Circuit Nodes & Lines -->
+  <path d="M12 32h10l4-8 6 16 6-12 4 4h14" fill="none" stroke="#6B8E6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center Core Microchip -->
+  <rect x="24" y="24" width="16" height="16" rx="4" fill="#20241F" stroke="#849B86" stroke-width="2"/>
+  <circle cx="32" cy="32" r="3" fill="#6B8E6E"/>
+  <!-- Pin indicators -->
+  <circle cx="12" cy="32" r="2.5" fill="#849B86"/>
+  <circle cx="52" cy="32" r="2.5" fill="#849B86"/>
+  <circle cx="32" cy="14" r="2" fill="#6B8E6E" opacity="0.8"/>
+  <circle cx="32" cy="50" r="2" fill="#6B8E6E" opacity="0.8"/>
+  <path d="M32 16v8 M32 40v8" stroke="#6B8E6E" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+</svg>
