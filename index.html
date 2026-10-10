@@ -98,6 +98,11 @@ h1 span{color:var(--blue)}
 .pb p{color:#c5d3ec;font-size:.97rem}
 .pb .row{margin-top:auto;display:flex;flex-wrap:wrap;gap:.6rem;padding-top:.5rem}
 .note{font-size:.82rem;color:var(--mute)}
+.pv.b{background:radial-gradient(circle at 50% 100%,rgba(79,216,232,.35),transparent 55%),linear-gradient(#0b2350,#061024)}
+.kf{list-style:none;display:grid;gap:.3rem;margin:.1rem 0}
+.kf li{position:relative;padding-left:1.1rem;font-size:.92rem;color:#c5d3ec}
+.kf li::before{content:'';position:absolute;left:0;top:.55em;width:.5rem;height:.5rem;border-radius:2px;background:var(--amber)}
+[data-theme=day] .kf li{color:#223455}
 details summary{cursor:pointer;color:var(--cyan);font-size:.9rem}
 
 /* certs */
@@ -340,6 +345,22 @@ html.cur,html.cur *{cursor:none!important}
     <p>Designed and developed an interactive learning platform covering key Electrical &amp; Electronics Engineering concepts related to Electric Vehicles, battery systems, charging, motors, power electronics and renewable energy integration.</p>
     <div><span class="tag">Electric Vehicles</span><span class="tag">Battery Systems</span><span class="tag">EV Charging</span><span class="tag">Electric Motors</span><span class="tag">Power Electronics</span><span class="tag">Renewable Energy Integration</span></div>
     <div class="row"><a class="btn gold" target="_blank" rel="noopener" href="https://evolvevlab.vercel.app/">View Live Project</a></div>
+   </div>
+  </article>
+  <article class="glass proj rv">
+   <div class="pv b" role="img" aria-label="Technical illustration of a sine wave, a resistor circuit and a logic gate"><svg viewBox="0 0 400 190" aria-hidden="true" focusable="false"><g stroke="#7bbcff" stroke-opacity=".12"><path d="M0 47h400M0 95h400M0 143h400M100 0v190M200 0v190M300 0v190"/></g><path d="M20 70q20-40 40 0t40 0 40 0" fill="none" stroke="#ffb53d" stroke-width="3" stroke-linecap="round"/><path d="M150 120h30l8-16 12 32 12-32 12 32 12-32 8 16h30" fill="none" stroke="#4fd8e8" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="150" cy="120" r="4" fill="#4fd8e8"/><circle cx="290" cy="120" r="4" fill="#4fd8e8"/><path d="M300 55h20M300 75h20M370 65h-8" stroke="#43d17a" stroke-width="3" stroke-linecap="round"/><path d="M320 47h22a18 18 0 0 1 0 36h-22z" fill="rgba(67,209,122,.15)" stroke="#43d17a" stroke-width="3" stroke-linejoin="round"/><text x="200" y="172" text-anchor="middle" fill="#e8eef9" font-family="IBM Plex Mono,monospace" font-size="15" opacity=".9">V = I × R</text></svg></div>
+   <div class="pb"><span class="cat">Electrical Engineering · Interactive Learning · Renewable Energy · EV Fundamentals</span>
+    <h3>ElectroBasics – Interactive EEE Learning Platform</h3>
+    <p>An interactive electrical engineering learning platform featuring 65+ topics, 12 electrical calculators, quizzes, formula sheets, a logic gate simulator, electrical machines, power systems, renewable energy and EV fundamentals.</p>
+    <ul class="kf" aria-label="Key features">
+     <li>65+ topics across fundamentals, machines, power systems, electronics, renewables and EVs</li>
+     <li>12 step-by-step electrical calculators</li>
+     <li>Quizzes and a searchable formula sheet</li>
+     <li>Logic gate simulator with live truth tables</li>
+     <li>Responsive layout with light and dark themes</li>
+    </ul>
+    <div><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span><span class="tag">Responsive Web Design</span><span class="tag">Interactive UI</span><span class="tag">Electrical Engineering</span><span class="tag">Renewable Energy</span><span class="tag">EV Fundamentals</span></div>
+    <div class="row"><a class="btn gold" target="_blank" rel="noopener" href="https://electrobasics-alpha.vercel.app/" aria-label="View ElectroBasics live project (opens in a new tab)">View Live Project</a></div>
    </div>
   </article>
  </div>
